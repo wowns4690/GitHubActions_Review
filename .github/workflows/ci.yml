@@ -1,20 +1,44 @@
-name: Python Build and Test
+name: Python Build, Test, and Lint
 
-on: [push]
+on:
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v4
-            - name: Set up Python
-              uses: actions/setup-python@v5
-              with:
-                python-version: '3.9'
-            - name: Install dependencies
-              run: |
-                python -m pip install --upgrade pip
-                pip install -r requirements.txt
-            - name: Run tests
-              run: pytest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: pytest
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Super Linter
+        uses: github/super-linter@v4
+
+  notify:
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: Send Discord notification
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            {
+              "text": "✅ 테스트가 성공적으로 완료되었습니다!"
+            }
+        env:
+          DISCORD_WEBHOOK: https://discord.com/api/webhooks/1286507897295208549/BLs-8nWr2i4v6wYCsP_ick0F7ocCSYz4Ai31h2kd6mEWs7_naD975HBViWSkhJDv4fok
