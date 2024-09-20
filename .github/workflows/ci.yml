@@ -43,4 +43,4 @@ jobs:
               "text": "✅ 테스트가 성공적으로 완료되었습니다!"
             }
         env:
-          DISCORD_WEBHOOK: https://discord.com/api/webhooks/1286507897295208549/BLs-8nWr2i4v6wYCsP_ick0F7ocCSYz4Ai31h2kd6mEWs7_naD975HBViWSkhJDv4fok
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
